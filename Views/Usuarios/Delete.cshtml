@@ -44,15 +44,9 @@
     </dl>
 
 
-    <form asp-action="Delete" method="post">
-        <!-- Hidden input field for UsuarioID -->
-        <input type="hidden" name="UsuarioID" value="@Model.UsuarioID" />
-
-        <div class="form-group">
-            <input type="submit" value="Delete" class="btn btn-danger" />
-        </div>
+    <form asp-action="Delete">
+            <input type="submit" value="Delete" asp-route-id="@Model.UsuarioID" class="btn btn-danger" />
     </form>
-
     </div>
 <a asp-action="Index">Back to List</a>
 </div>

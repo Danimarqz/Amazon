@@ -77,10 +77,9 @@ namespace Amazon.Controllers
         // POST: UsuariosController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var user = await _usuariosRepository.GetById(id);
-            
             if (user != null)
             {
                 _usuariosRepository.Delete(user);
