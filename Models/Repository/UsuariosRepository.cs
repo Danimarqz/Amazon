@@ -28,7 +28,7 @@ namespace Amazon.Models.Repository
 
         public void Delete(Usuarios usuarios)
         {
-            var query = "DELETE * FROM Usuarios u WHERE u.UsuarioID = @UsuarioID";
+            var query = "DELETE FROM Usuarios WHERE UsuarioID = @UsuarioID";
             var parameters = new DynamicParameters();
             parameters.Add("UsuarioID", usuarios.UsuarioID);
             using (var connection = _conexion.ObtenerConexion())
@@ -41,25 +41,37 @@ namespace Amazon.Models.Repository
         {
             var query = @"UPDATE Usuarios SET NombreUsuario = @NombreUsuario, 
             Contrasena = @Contrasena,
-            Email = @Email
-            userType = @userType";
+            Email = @Email,
+            userType = @userType
+            WHERE UsuarioID = @UsuarioID";
             var parameters = new DynamicParameters();
             parameters.Add("NombreUsuario", usuarios.NombreUsuario, DbType.String);
             parameters.Add("Contrasena", usuarios.Contrasena, DbType.String);
             parameters.Add("Email", usuarios.Email, DbType.String);
             parameters.Add("userType", usuarios.userType, DbType.String);
+            parameters.Add("UsuarioID", usuarios.UsuarioID, DbType.Int32);
             using (var connection = _conexion.ObtenerConexion())
             {
                 connection.Execute(query, parameters);
             }
         }
 
-        async Task<IEnumerable<Usuarios>> IUsuariosRepository.GetAll()
+        public async Task<IEnumerable<Usuarios>> GetAll()
         {
             var query = "SELECT * FROM Usuarios";
             using (var connection = _conexion.ObtenerConexion())
             {
                 return await connection.QueryAsync<Usuarios>(query);
+            }
+        }
+        public async Task<Usuarios> GetById(int id)
+        {
+            var query = "SELECT * FROM Usuarios u WHERE u.UsuarioID = @UsuarioID";
+            var parameters = new DynamicParameters();
+            parameters.Add("UsuarioID", id, DbType.Int32);
+            using (var connection = _conexion.ObtenerConexion())
+            {
+                return await connection.QuerySingleOrDefaultAsync<Usuarios>(query, parameters);
             }
         }
     }

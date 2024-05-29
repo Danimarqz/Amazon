@@ -7,7 +7,7 @@
         public string Contrasena { get; set; }
         public string Email { get; set; }
         public string userType { get; set; }
-        public ICollection<Carrito> Carrito { get; set; }
-        public ICollection<Ventas> Ventas { get; set; }
+        public ICollection<Carrito>? Carrito { get; set; }
+        public ICollection<Ventas>? Ventas { get; set; }
     }
 }

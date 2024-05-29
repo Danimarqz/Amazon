@@ -1,4 +1,5 @@
-﻿using Amazon.Models.Repository;
+﻿using Amazon.Models;
+using Amazon.Models.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace Amazon.Controllers
         public async Task<IActionResult> Index()
         {
             var Users = await _usuariosRepository.GetAll();
-            return View("Index", Users);
+            return View(Users);
         }
 
         // GET: UsuariosController/Details/5
@@ -35,58 +36,57 @@ namespace Amazon.Controllers
         // POST: UsuariosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult Create(Usuarios u)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                _usuariosRepository.Add(u);
+                return RedirectToAction("Index"); // Redirect to Index after successful creation
             }
-            catch
-            {
-                return View();
-            }
+
+            return View(u); // Return the view with the model to display validation errors
         }
 
         // GET: UsuariosController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            var user = await _usuariosRepository.GetById(id);
+            return user == null ? NotFound() : View(user);
         }
 
         // POST: UsuariosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Usuarios u)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                _usuariosRepository.Update(u);
+                return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+            return View(u);
         }
 
         // GET: UsuariosController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            return View();
+            var user = await _usuariosRepository.GetById(id);
+            return user == null ? NotFound() : View(user);
         }
 
         // POST: UsuariosController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id)
         {
-            try
+            var user = await _usuariosRepository.GetById(id);
+            
+            if (user != null)
             {
-                return RedirectToAction(nameof(Index));
+                _usuariosRepository.Delete(user);
+                return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction("Index");
         }
     }
 }
