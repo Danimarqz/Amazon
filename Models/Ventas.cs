@@ -7,6 +7,6 @@
         public DateTime FechaVenta { get; set; }
         public double TotalVenta { get; set; }
         public Usuarios usuuario { get; set; }
-        public ICollection<DetallesVenta> DetallesVenta { get; set; }
+        public ICollection<DetallesVenta>? DetallesVenta { get; set; }
     }
 }

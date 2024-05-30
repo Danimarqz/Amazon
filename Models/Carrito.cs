@@ -7,6 +7,6 @@
         public DateTime FechaCarrito {  get; set; }
         public double totalVenta { get; set; }
         public Usuarios usuario { get; set; }
-        public ICollection<DetallesCarrito> DetallesCarrito { get; set;}
+        public ICollection<DetallesCarrito>? DetallesCarrito { get; set;}
     }
 }
