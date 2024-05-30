@@ -121,6 +121,7 @@ namespace Amazon.Controllers
             {
                 string jsonString = JsonSerializer.Serialize(user);
                 HttpContext.Session.SetString("User", jsonString);
+                Global.user = user;
                 if (u.userType == "administrador")
                 {
                     HttpContext.Session.SetString("Admin", jsonString);
