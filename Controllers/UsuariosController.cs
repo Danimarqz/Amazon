@@ -2,6 +2,7 @@
 using Amazon.Models.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Amazon.Controllers
 {
@@ -38,13 +39,8 @@ namespace Amazon.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Usuarios u)
         {
-            if (ModelState.IsValid)
-            {
                 _usuariosRepository.Add(u);
-                return RedirectToAction("Index"); // Redirect to Index after successful creation
-            }
-
-            return View(u); // Return the view with the model to display validation errors
+                return RedirectToAction("Index");
         }
 
         // GET: UsuariosController/Edit/5
@@ -85,7 +81,24 @@ namespace Amazon.Controllers
                 _usuariosRepository.Delete(user);
                 return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+            return View("Delete", id);
+        }
+        // GET: Login
+        public ActionResult Login()
+        {
+            return View();
+        }
+        //POST: Login
+        public async Task<IActionResult> DoLogin(Usuarios u)
+        {
+            var user = await _usuariosRepository.GetByEmail(u.Email);
+            if (user.Contrasena == u.Contrasena)
+            {
+                string jsonString = JsonSerializer.Serialize(user);
+                HttpContext.Session.SetString("User", jsonString);
+                return RedirectToAction("Index");
+            }
+            return View("Login");
         }
     }
 }

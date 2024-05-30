@@ -14,7 +14,7 @@ namespace Amazon.Models.Repository
         {
             var query = @"
             INSERT INTO Usuarios (NombreUsuario, Contrasena, Email, userType) VALUES
-            (@NombreUsuario, @Contrasena, @Email, @userType";
+            (@NombreUsuario, @Contrasena, @Email, @userType)";
             var parameters = new DynamicParameters();
             parameters.Add("NombreUsuario", usuarios.NombreUsuario, DbType.String);
             parameters.Add("Contrasena", usuarios.Contrasena, DbType.String);
@@ -69,6 +69,17 @@ namespace Amazon.Models.Repository
             var query = "SELECT * FROM Usuarios u WHERE u.UsuarioID = @UsuarioID";
             var parameters = new DynamicParameters();
             parameters.Add("UsuarioID", id, DbType.Int32);
+            using (var connection = _conexion.ObtenerConexion())
+            {
+                return await connection.QuerySingleOrDefaultAsync<Usuarios>(query, parameters);
+            }
+        }
+
+        public async Task<Usuarios> GetByEmail(string email)
+        {
+            var query = "SELECT * FROM Usuarios WHERE email = @email";
+            var parameters = new DynamicParameters();
+            parameters.Add("email", email, DbType.String);
             using (var connection = _conexion.ObtenerConexion())
             {
                 return await connection.QuerySingleOrDefaultAsync<Usuarios>(query, parameters);

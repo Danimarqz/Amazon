@@ -1,26 +1,21 @@
 ﻿@model Amazon.Models.Usuarios
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Login";
 }
 
-<h1>Create</h1>
+<h1>Login</h1>
 
 <h4>Usuarios</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="DoLogin">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NombreUsuario" class="control-label"></label>
-                <input asp-for="NombreUsuario" class="form-control" />
-                <span asp-validation-for="NombreUsuario" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Contrasena" class="control-label"></label>
@@ -35,7 +30,7 @@
 </div>
 
 <div>
-    <a asp-action="Login">Login</a>
+    <a asp-action="Register">Registrate</a>
 </div>
 
 @section Scripts {
