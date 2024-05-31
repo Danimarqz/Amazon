@@ -29,7 +29,13 @@ namespace Amazon.Models.Repository
 
         public void Delete(Productos productos)
         {
-            throw new NotImplementedException();
+            var query = "DELETE FROM Productos WHERE ProductoID = @ProductoID";
+            var parameters = new DynamicParameters();
+            parameters.Add("ProductoID", productos.ProductoID, DbType.Int32);
+            using (var connection = _conexion.ObtenerConexion())
+            {
+                connection.Execute(query, parameters);
+            }
         }
 
         public Task<IEnumerable<Productos>> GetAll()
