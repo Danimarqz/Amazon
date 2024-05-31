@@ -2,7 +2,9 @@
 {
     public interface ICarritoRepository
     {
-        public IEnumerable<Carrito> GetCartsWithUsers(int userID);
-        public void AddCart(Carrito cart);
+        public Task<Carrito> GetCart(int userID);
+        public void Add(Carrito cart);
+        public void Edit(Carrito cart);
+        public void Delete(Carrito cart);
     }
 }

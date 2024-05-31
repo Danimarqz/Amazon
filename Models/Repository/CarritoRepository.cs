@@ -11,43 +11,59 @@ public class CarritoRepository : ICarritoRepository
         _conexion = conexion;
     }
 
-    public IEnumerable<Carrito> GetCartsWithUsers(int userID)
+    public async Task<Carrito> GetCart(int userID)
+    {
+            string query = "SELECT * FROM Carrito WHERE UsuarioID = @UsuarioID";
+            var parameters = new DynamicParameters();
+            parameters.Add("UsuarioID", userID, System.Data.DbType.Int32);
+            using (var connection = _conexion.ObtenerConexion())
+            {
+                var carrito = await connection.QuerySingleOrDefaultAsync<Carrito>(query, parameters);
+                return carrito;
+            }
+    }
+
+    public void Add(Carrito cart)
     {
         using (var connection = _conexion.ObtenerConexion())
         {
-            string query = @$"
-                SELECT c.*, u.*
-                FROM Carts c
-                INNER JOIN Usuarios u ON c.UsuarioID = u.UsuarioID
-                WHERE u.UserID = {userID}";
-
-            var cartDictionary = new Dictionary<int, Carrito>();
-
-            var result = connection.Query<Carrito, Usuarios, Carrito>(query,
-                (cart, user) =>
-                {
-                    if (!cartDictionary.TryGetValue(cart.CarritoID, out var currentCart))
-                    {
-                        currentCart = cart;
-                        cartDictionary.Add(currentCart.CarritoID, currentCart);
-                    }
-
-                    currentCart.usuario = user;
-                    return currentCart;
-                }, splitOn: "UserID");
-
-            return result.Distinct().ToList();
+            string query = @"INSERT INTO Carts (UsuarioID, FechaCarrito, totalVenta) 
+            VALUES (@UserID, @FechaCarrito, @totalVenta)";
+            var parameters = new DynamicParameters();
+            parameters.Add("UserID", cart.UsuarioID, System.Data.DbType.Int32);
+            parameters.Add("FechaCarrito", cart.FechaCarrito, System.Data.DbType.DateTime);
+            parameters.Add("totalVenta", cart.totalVenta, System.Data.DbType.Decimal);
+            connection.Execute(query, parameters);
         }
     }
-
-    public void AddCart(Carrito cart)
+    public void Edit(Carrito cart)
     {
+        string query = @"UPDATE Carrito SET
+        FechaCarrito = @FechaCarrito
+        totalVenta = @totalVenta
+        WHERE CarritoID = @CarritoID
+        AND UsuarioID = @UsuarioID";
+        var parameters = new DynamicParameters();
+        parameters.Add("FechaCarrito", cart.FechaCarrito, System.Data.DbType.DateTime);
+        parameters.Add("totalVenta", cart.totalVenta, System.Data.DbType.Decimal);
+        parameters.Add("CarritoID", cart.CarritoID, System.Data.DbType.Int32);
+        parameters.Add("UsuarioID", cart.UsuarioID, System.Data.DbType.Int32);
         using (var connection = _conexion.ObtenerConexion())
         {
-            string query = "INSERT INTO Carts (UsuarioID, FechaCarrito) VALUES (@UserID, @DateCreated)";
-            connection.Execute(query, cart);
+            connection.Execute(query, parameters);
         }
     }
 
-    // Otros métodos para manejar el carrito
+    public void Delete(Carrito cart)
+    {
+        string query = "DELETE FROM Carrito WHERE CarritoID = @CarritoID AND UsuarioID = @UsuarioID";
+        var parameters = new DynamicParameters();
+        parameters.Add("CarritoID", cart.CarritoID, System.Data.DbType.Int32);
+        parameters.Add("UsuarioID", cart.UsuarioID, System.Data.DbType.Int32);
+        using (var connection = _conexion.ObtenerConexion())
+        {
+            connection.Execute(query, parameters);
+        }
+
+    }
 }
