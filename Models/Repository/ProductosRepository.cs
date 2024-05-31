@@ -1,4 +1,7 @@
 ﻿
+using Dapper;
+using System.Data;
+
 namespace Amazon.Models.Repository
 {
     public class ProductosRepository : IProductosRepository
@@ -11,7 +14,17 @@ namespace Amazon.Models.Repository
         }
         public void Create(Productos productos)
         {
-            throw new NotImplementedException();
+            var query = @"
+            INSERT INTO Productos (Precio, Descripcion, Nombre)
+            VALUES (@Precio, @Descripcion, @Nombre";
+            var parameters = new DynamicParameters();
+            parameters.Add("Precio", productos.Precio, DbType.Double);
+            parameters.Add("Descripcion", productos.Descripcion, DbType.String);
+            parameters.Add("Nombre", productos.Nombre, DbType.String);
+            using (var connection = _conexion.ObtenerConexion())
+            {
+                connection.Execute(query, parameters);
+            }
         }
 
         public void Delete(Productos productos)
