@@ -9,6 +9,7 @@ builder.Services.AddSingleton(new Conexion(builder.Configuration.GetConnectionSt
 builder.Services.AddScoped<IUsuariosRepository, UsuariosRepository>();
 builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
 builder.Services.AddScoped<IProductosRepository, ProductosRepository>();
+builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options=>
 {
