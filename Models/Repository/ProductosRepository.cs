@@ -38,14 +38,24 @@ namespace Amazon.Models.Repository
             }
         }
 
-        public Task<IEnumerable<Productos>> GetAll()
+        public async Task<IEnumerable<Productos>> GetAll()
         {
-            throw new NotImplementedException();
+            var query = "SELECT * FROM Productos";
+            using (var connection = _conexion.ObtenerConexion())
+            {
+                return await connection.QueryAsync<Productos>(query);
+            }
         }
 
-        public Task<Productos> GetById(int id)
+        public async Task<Productos> GetById(int id)
         {
-            throw new NotImplementedException();
+            var query = "SELECT * FROM Productos WHERE ProductoID = @ProductoID";
+            var parameters = new DynamicParameters();
+            parameters.Add("ProductoID", id, DbType.Int32);
+            using (var connection = _conexion.ObtenerConexion())
+            {
+                return await connection.QueryFirstOrDefaultAsync<Productos>(query);
+            }
         }
 
         public void Update(Productos productos)
