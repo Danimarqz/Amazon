@@ -16,7 +16,7 @@ namespace Amazon.Models.Repository
         {
             var query = @"
             INSERT INTO Productos (Precio, Descripcion, Nombre)
-            VALUES (@Precio, @Descripcion, @Nombre";
+            VALUES (@Precio, @Descripcion, @Nombre)";
             var parameters = new DynamicParameters();
             parameters.Add("Precio", productos.Precio, DbType.Double);
             parameters.Add("Descripcion", productos.Descripcion, DbType.String);

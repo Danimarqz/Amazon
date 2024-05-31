@@ -36,7 +36,14 @@
             @Html.DisplayFor(model => model.Nombre)
         </dd>
     </dl>
-    
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <h2>Error</h2>
+        <div class="alert alert-danger">
+            @ViewBag.ErrorMessage
+        </div>
+    }
     <form asp-action="Delete">
         <input type="submit" asp-route-id="@Model.ProductoID" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>

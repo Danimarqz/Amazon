@@ -41,7 +41,7 @@ namespace Amazon.Controllers
             try
             {
                 _productosRepository.Create(productos);
-                return RedirectToAction(nameof(IndexAsync));
+                return RedirectToAction("Index");
             }
             catch
             {
@@ -89,7 +89,7 @@ namespace Amazon.Controllers
             } catch(InvalidOperationException ex)
             {
                 ViewBag.ErrorMessage = ex.Message;
-                return View("Delete", id);
+                return View("Delete", producto);
             }
         }
     }
