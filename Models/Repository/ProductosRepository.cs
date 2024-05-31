@@ -60,7 +60,20 @@ namespace Amazon.Models.Repository
 
         public void Update(Productos productos)
         {
-            throw new NotImplementedException();
+            var query = @"UPDATE Productos SET
+            Precio = @Precio,
+            Descripcion = @Descripcion,
+            Nombre = @Nombre
+            WHERE ProductoID = @ProductoID";
+            var parameters = new DynamicParameters();
+            parameters.Add("Precio", productos.Precio, DbType.Double);
+            parameters.Add("Descripcion", productos.Descripcion, DbType.String);
+            parameters.Add("Nombre", productos.Nombre, DbType.String);
+            parameters.Add("ProductoID", productos.ProductoID, DbType.Int32);
+            using (var connection = _conexion.ObtenerConexion())
+            {
+                connection.Execute(query, parameters);
+            }
         }
     }
 }
