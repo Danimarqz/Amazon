@@ -29,14 +29,27 @@ namespace Amazon.Models.Repository
 
         public void Delete(Productos productos)
         {
-            var query = "DELETE FROM Productos WHERE ProductoID = @ProductoID";
-            var parameters = new DynamicParameters();
-            parameters.Add("ProductoID", productos.ProductoID, DbType.Int32);
             using (var connection = _conexion.ObtenerConexion())
             {
-                connection.Execute(query, parameters);
+                // Comprobar FK
+                var queryDetallesVenta = "SELECT COUNT(*) FROM DetallesVenta WHERE ProductoID = @ProductoID";
+                var parameters = new DynamicParameters();
+                parameters.Add("ProductoID", productos.ProductoID, DbType.Int32);
+
+                var dependencyCount = connection.ExecuteScalar<int>(queryDetallesVenta, parameters);
+                
+                if (dependencyCount > 0)
+                {
+                    throw new InvalidOperationException("Cannot delete product because there are related sales details.");
+                }
+                else
+                {
+                    var deleteQuery = "DELETE FROM Productos WHERE ProductoID = @ProductoID";
+                    connection.Execute(deleteQuery, parameters);
+                }
             }
         }
+
 
         public async Task<IEnumerable<Productos>> GetAll()
         {
@@ -54,7 +67,7 @@ namespace Amazon.Models.Repository
             parameters.Add("ProductoID", id, DbType.Int32);
             using (var connection = _conexion.ObtenerConexion())
             {
-                return await connection.QueryFirstOrDefaultAsync<Productos>(query);
+                return await connection.QueryFirstOrDefaultAsync<Productos>(query, parameters);
             }
         }
 
@@ -66,7 +79,7 @@ namespace Amazon.Models.Repository
             Nombre = @Nombre
             WHERE ProductoID = @ProductoID";
             var parameters = new DynamicParameters();
-            parameters.Add("Precio", productos.Precio, DbType.Double);
+            parameters.Add("Precio", productos.Precio, DbType.Decimal);
             parameters.Add("Descripcion", productos.Descripcion, DbType.String);
             parameters.Add("Nombre", productos.Nombre, DbType.String);
             parameters.Add("ProductoID", productos.ProductoID, DbType.Int32);

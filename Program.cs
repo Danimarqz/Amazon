@@ -8,6 +8,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton(new Conexion(builder.Configuration.GetConnectionString("Amazon")));
 builder.Services.AddScoped<IUsuariosRepository, UsuariosRepository>();
 builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
+builder.Services.AddScoped<IProductosRepository, ProductosRepository>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options=>
 {

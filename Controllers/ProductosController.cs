@@ -82,12 +82,15 @@ namespace Amazon.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var producto = await _productosRepository.GetById(id);
-            if (producto != null)
+            try
             {
                 _productosRepository.Delete(producto);
                 return RedirectToAction("Index");
+            } catch(InvalidOperationException ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Delete", id);
             }
-            return View("Delete", id);
         }
     }
 }

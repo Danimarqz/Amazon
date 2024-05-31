@@ -6,7 +6,7 @@ namespace Amazon.Models
     {
         public int ProductoID { get; set; }
         [Required]
-        public double Precio { get; set; }
+        public float Precio { get; set; }
         [Required]
         public string Descripcion { get; set; }
         [Required]
