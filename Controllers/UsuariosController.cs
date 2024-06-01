@@ -122,7 +122,8 @@ namespace Amazon.Controllers
                 string jsonString = JsonSerializer.Serialize(user);
                 HttpContext.Session.SetString("User", jsonString);
                 Global.user = user;
-                if (u.userType == "administrador")
+                Console.WriteLine(Global.user.Email);
+                if (user.userType == "administrador")
                 {
                     HttpContext.Session.SetString("Admin", jsonString);
                 }
@@ -130,7 +131,7 @@ namespace Amazon.Controllers
             }
             return View("Login");
         }
-        protected bool CheckSession(string key)
+        private bool CheckSession(string key)
         {
             return HttpContext.Session.Keys.Contains(key);
         }

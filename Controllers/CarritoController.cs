@@ -17,53 +17,37 @@ namespace Amazon.Controllers
         }
 
         // GET: CarritoController
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if (!CheckSession("User"))
             {
                 return RedirectToAction("Index", "Home");
             }
-                var carrito = _carritoRepository.GetCart(Global.user.UsuarioID);
+            if (CheckSession("Admin"))
+            {
+                var carrito = await _carritoRepository.GetCartAdmin();
                 return View(carrito);
+            } else
+            {
+                try
+                {
+                    int cartID = await _carritoRepository.GetCartID(Global.user.UsuarioID);
+                    return RedirectToAction("Details", cartID);
+                }
+                catch
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
         }
 
         // GET: CarritoController/Details/5
         public async Task<IActionResult> Details(int cartID)
         {
-            var carrito = await _carritoRepository.GetAllCart(id);
+            var carrito = await _carritoRepository.GetAllCart(cartID);
             var jsonString = JsonSerializer.Serialize(carrito);
             HttpContext.Session.SetString("Carrito", jsonString);
             return View(carrito);
-        }
-
-        // GET: CarritoController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: CarritoController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(DetallesCarrito detallesCarrito)
-        {
-            DateTime now = DateTime.Now;
-            Carrito cart = new Carrito();   
-            cart.CarritoID = detallesCarrito.CarritoID;
-            cart.UsuarioID = Global.user.UsuarioID;
-            cart.FechaCarrito = now;
-            cart.totalVenta = detallesCarrito.PrecioTotal;
-
-            try
-            {
-                _carritoRepository.Add(cart);
-                _carritoRepository.AddDetalles(detallesCarrito);
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
         }
 
         // GET: CarritoController/Edit/5
@@ -80,7 +64,7 @@ namespace Amazon.Controllers
         {
             try
             {
-                _carritoRepository.EditDetallesCarrito(detallesCarrito);
+                _carritoRepository.EditDetallesProductoCarrito(detallesCarrito);
                 var carrito = _carritoRepository.GetAllCart(detallesCarrito.CarritoID);
                 return RedirectToAction("Details", carrito);
             }
@@ -91,23 +75,26 @@ namespace Amazon.Controllers
         }
 
         // GET: CarritoController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+        //public ActionResult DeleteProducto(int productoID)
+        //{
+          //  return View(productoID);
+        //}
 
         // POST: CarritoController/Delete/5
+        //Borrar producto del carrito
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteProductoAsync(int productoID)
         {
+            int cartID = await _carritoRepository.GetCartID(Global.user.UsuarioID);
             try
             {
-                return RedirectToAction(nameof(Index));
+                _carritoRepository.DeleteProducto(productoID, cartID);
+                return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return RedirectToAction("Details", cartID);
             }
         }
         protected bool CheckSession(string key)

@@ -8,9 +8,11 @@ namespace Amazon.Controllers
     public class ProductosController : Controller
     {
         private readonly IProductosRepository _productosRepository;
-        public ProductosController(IProductosRepository productosRepository)
+        private readonly ICarritoRepository _carritoRepository;
+        public ProductosController(IProductosRepository productosRepository, ICarritoRepository carritoRepository)
         {
             _productosRepository = productosRepository;
+            _carritoRepository = carritoRepository;
         }
 
         // GET: ProductosController
@@ -30,6 +32,10 @@ namespace Amazon.Controllers
         // GET: ProductosController/Create
         public ActionResult Create()
         {
+            if (!CheckSession("Admin"))
+            {
+                return RedirectToAction("Index");
+            }
             return View();
         }
 
@@ -38,6 +44,10 @@ namespace Amazon.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Productos productos)
         {
+            if (!CheckSession("Admin"))
+            {
+                return RedirectToAction("Index");
+            }
             try
             {
                 _productosRepository.Create(productos);
@@ -52,6 +62,10 @@ namespace Amazon.Controllers
         // GET: ProductosController/Edit/5
         public async Task<IActionResult> EditAsync(int id)
         {
+            if (!CheckSession("Admin"))
+            {
+                return RedirectToAction("Index");
+            }
             var producto = await _productosRepository.GetById(id);
             return producto == null ? NotFound() : View(producto);
         }
@@ -61,6 +75,10 @@ namespace Amazon.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Productos productos)
         {
+            if (!CheckSession("Admin"))
+            {
+                return RedirectToAction("Index");
+            }
             if (ModelState.IsValid)
             {
                 _productosRepository.Update(productos);
@@ -72,6 +90,10 @@ namespace Amazon.Controllers
         // GET: ProductosController/Delete/5
         public async Task<IActionResult> DeleteAsync(int id)
         {
+            if (!CheckSession("Admin"))
+            {
+                return RedirectToAction("Index");
+            }
             var producto = await _productosRepository.GetById(id);
             return producto == null ? NotFound() : View(producto);
         }
@@ -81,6 +103,9 @@ namespace Amazon.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
+            if (!CheckSession("Admin")){
+                return RedirectToAction("Index");
+            }
             var producto = await _productosRepository.GetById(id);
             try
             {
@@ -91,6 +116,24 @@ namespace Amazon.Controllers
                 ViewBag.ErrorMessage = ex.Message;
                 return View("Delete", producto);
             }
+        }
+        // POST: AddToCart
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddToCart(int productID)
+        {
+            int userID = Global.user.UsuarioID;
+            int? cartID = await _carritoRepository.GetCartID(userID);
+            if (cartID == 0)
+            {
+                await _carritoRepository.Add(userID);
+            };
+            await _carritoRepository.AddProducto(productID, userID);
+            return RedirectToAction("Index");
+        }
+        private bool CheckSession(string key)
+        {
+            return HttpContext.Session.Keys.Contains(key);
         }
     }
 }

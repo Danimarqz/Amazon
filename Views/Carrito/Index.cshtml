@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Amazon.Models.Carrito>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CarritoID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UsuarioID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaCarrito)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.totalVenta)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CarritoID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UsuarioID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaCarrito)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.totalVenta)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new { id = item.CarritoID /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
