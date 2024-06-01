@@ -39,7 +39,11 @@
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.ProductoID }) |
                 @Html.ActionLink("Details", "Details", new { id = item.ProductoID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ProductoID })
+                @Html.ActionLink("Delete", "Delete", new { id = item.ProductoID }) |
+                <form asp-action="AddToCart" method="post">
+                    <input type="hidden" value="@item.ProductoID" name="productID"/>
+                        <input type="submit" value="Add" />
+                </form>
             </td>
         </tr>
 }
