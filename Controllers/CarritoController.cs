@@ -31,8 +31,7 @@ namespace Amazon.Controllers
             {
                 try
                 {
-                    int cartID = await _carritoRepository.GetCartID(Global.user.UsuarioID);
-                    return RedirectToAction("Details", cartID);
+                    return RedirectToAction("Details");
                 }
                 catch
                 {
@@ -42,9 +41,11 @@ namespace Amazon.Controllers
         }
 
         // GET: CarritoController/Details/5
-        public async Task<IActionResult> Details(int cartID)
+        public async Task<IActionResult> Details(int? cartID)
         {
-            var carrito = await _carritoRepository.GetAllCart(cartID);
+            int cart = cartID ?? await _carritoRepository.GetCartID(Global.user.UsuarioID);
+            Console.WriteLine(cart);
+            var carrito = await _carritoRepository.GetAllCart(cart);
             var jsonString = JsonSerializer.Serialize(carrito);
             HttpContext.Session.SetString("Carrito", jsonString);
             return View(carrito);
