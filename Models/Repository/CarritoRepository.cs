@@ -33,15 +33,14 @@ public class CarritoRepository : ICarritoRepository
             return carritoID;
         }
     }
-    public async Task<DetallesCarrito> GetAllCart(int userID)
+    public async Task<IEnumerable<DetallesCarrito>> GetAllCart(int cartID)
     {
-        int cartID = await GetCardID(userID);
         string query = "SELECT * FROM DetallesCarrito WHERE CarritoID = @cartID";
         var paremeters = new DynamicParameters();
         paremeters.Add("cartID", cartID);
         using (var connection = _conexion.ObtenerConexion())
         {
-            var cartDetailed = await connection.QuerySingleOrDefaultAsync<DetallesCarrito>(query, paremeters);
+            var cartDetailed = await connection.QueryAsync<DetallesCarrito>(query, paremeters);
             return cartDetailed;
         }
     }
@@ -76,12 +75,10 @@ public class CarritoRepository : ICarritoRepository
     public void EditCarrito(Carrito cart)
     {
         string query = @"UPDATE Carrito SET
-        FechaCarrito = @FechaCarrito,
         totalVenta = @totalVenta,
         WHERE CarritoID = @CarritoID,
         AND UsuarioID = @UsuarioID";
         var parameters = new DynamicParameters();
-        parameters.Add("FechaCarrito", cart.FechaCarrito, System.Data.DbType.DateTime);
         parameters.Add("totalVenta", cart.totalVenta, System.Data.DbType.Decimal);
         parameters.Add("CarritoID", cart.CarritoID, System.Data.DbType.Int32);
         parameters.Add("UsuarioID", cart.UsuarioID, System.Data.DbType.Int32);
@@ -90,15 +87,17 @@ public class CarritoRepository : ICarritoRepository
             connection.Execute(query, parameters);
         }
     }
-    public void EditDetallesCarrito(DetallesCarrito detallesCarrito)
+    public void EditDetallesProductoCarrito(DetallesCarrito detallesCarrito)
     {
         string query = @"UPDATE DetallesCarrito SET
-        ProductoID = @ProductoID,
         Cantidad = @Cantidad,
         PrecioUnitario = @PrecioUnitario,
-        PrecioTotal = @PrecioTotal";
+        PrecioTotal = @PrecioTotal
+        WHERE CarritoID = @CarritoID
+        AND ProductoID = @ProductoID";
         var parameters = new DynamicParameters();
         parameters.Add("ProductoID", detallesCarrito.ProductoID);
+        parameters.Add("CarritoID", detallesCarrito.CarritoID);
         parameters.Add("Cantidad", detallesCarrito.Cantidad);
         parameters.Add("PrecioUnitario", detallesCarrito.PrecioUnitario);
         parameters.Add("PrecioTotal", detallesCarrito.PrecioTotal);
