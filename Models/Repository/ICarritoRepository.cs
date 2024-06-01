@@ -9,5 +9,6 @@
         public void AddDetalles(DetallesCarrito detallesCarrito);
         public void EditCarrito(Carrito cart);
         public void EditDetallesCarrito(DetallesCarrito detallesCarrito);
+        protected Task<int> CalcularPrecioTotal(int carritoID);
     }
 }

@@ -22,7 +22,7 @@ public class CarritoRepository : ICarritoRepository
                 return carrito;
             }
     }
-    public async Task<int> GetCardID(int userID)
+    public async Task<int> GetCartID(int userID)
     {
         string query = "SELECT CarritoID FROM Carrito WHERE UsuarioID = @UsuarioID";
         var parameters = new DynamicParameters();
@@ -72,10 +72,11 @@ public class CarritoRepository : ICarritoRepository
             connection.Execute(query, parameters);
         }
     }
-    public void EditCarrito(Carrito cart)
+    public async void EditCarrito(Carrito cart)
     {
-        string query = @"UPDATE Carrito SET
-        totalVenta = @totalVenta,
+        int totalVenta = await CalcularPrecioTotal(cart.CarritoID);
+        string query = @$"UPDATE Carrito SET
+        totalVenta = {totalVenta},
         WHERE CarritoID = @CarritoID,
         AND UsuarioID = @UsuarioID";
         var parameters = new DynamicParameters();
@@ -104,6 +105,16 @@ public class CarritoRepository : ICarritoRepository
         using (var connection = _conexion.ObtenerConexion())
         {
             connection.Execute(query, parameters);
+        }
+    }
+    //Calcular preciototal
+    protected async Task<int> CalcularPrecioTotal(int carritoID)
+    {
+        var query = "SELECT SUM(precioTotal) FROM DetallesCarrito WHERE CarritoID = @CarritoID";
+        using(var connection = _conexion.ObtenerConexion())
+        {
+            int total = await connection.ExecuteAsync(query,carritoID);
+            return total;
         }
     }
 }

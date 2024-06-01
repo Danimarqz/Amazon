@@ -1,5 +1,4 @@
-﻿
-using Dapper;
+﻿using Dapper;
 using System.Data;
 
 namespace Amazon.Models.Repository
