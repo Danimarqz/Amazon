@@ -9,9 +9,11 @@ namespace Amazon.Controllers
     public class UsuariosController : Controller
     {
         private readonly IUsuariosRepository _usuariosRepository;
-        public UsuariosController(IUsuariosRepository usuariosRepository)
+        private readonly ICarritoRepository _carritoRepository;
+        public UsuariosController(IUsuariosRepository usuariosRepository, ICarritoRepository carritoRepository)
         {
             _usuariosRepository = usuariosRepository;
+            _carritoRepository = carritoRepository;
         }
 
         // GET: UsuariosController
@@ -130,6 +132,7 @@ namespace Amazon.Controllers
                 string jsonString = JsonSerializer.Serialize(user);
                 HttpContext.Session.SetString("User", jsonString);
                 Global.user = user;
+                Global.carritoCantidad = await _carritoRepository.ProductosCarrito(Global.user.UsuarioID);
                 if (user.userType == "administrador")
                 {
                     HttpContext.Session.SetString("Admin", jsonString);

@@ -6,5 +6,6 @@ namespace Amazon
     {
         public static Usuarios? user {  get; set; }
         public static bool IsAdmin { get { return user?.userType == "administrador"; } }
+        public static int carritoCantidad { get; set; }
     }
 }

@@ -46,16 +46,19 @@ namespace Amazon.Controllers
         public async Task<IActionResult> EditAdd(int productoID)
         {
             await _carritoRepository.AddProducto(productoID, Global.user.UsuarioID);
+            Global.carritoCantidad = await _carritoRepository.ProductosCarrito(Global.user.UsuarioID);
             return RedirectToAction("Details", await GetDetallesCarrito());
         }
         public async Task<IActionResult> EditRM(int productoID)
         {
             await _carritoRepository.RmProducto(productoID, Global.user.UsuarioID);
+            await _carritoRepository.AddProducto(productoID, Global.user.UsuarioID);
             return RedirectToAction("Details", await GetDetallesCarrito());
         }
         public async Task<IActionResult> Delete(int productoID)
         {
             await _carritoRepository.RmAllProducto(productoID, Global.user.UsuarioID);
+            await _carritoRepository.AddProducto(productoID, Global.user.UsuarioID);
             return RedirectToAction("Details", await GetDetallesCarrito());
         }
 
@@ -102,6 +105,7 @@ namespace Amazon.Controllers
                 await _ventaRepository.AddVenta(productoID, userID);
             }
             await _carritoRepository.RmCarrito(userID);
+            Global.carritoCantidad = await _carritoRepository.ProductosCarrito(Global.user.UsuarioID);
             return RedirectToAction("Index", "Ventas");
         }
         protected bool CheckSession(string key)

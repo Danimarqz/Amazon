@@ -10,5 +10,6 @@
         public Task RmAllProducto(int productoID, int userID);
         public Task EditDetallesProductoCarrito(DetallesCarrito detallesCarrito);
         public Task RmCarrito(int userID);
+        public Task<int> ProductosCarrito(int userID);
     }
 }

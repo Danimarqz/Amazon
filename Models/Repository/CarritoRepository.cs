@@ -57,7 +57,7 @@ public class CarritoRepository : ICarritoRepository
         int cantidad = await CheckCantidadProducto(productoID, cartID) + 1;
         decimal precio = await CheckPrecioUnitario(productoID);
         decimal precioTotal = precio * (cantidad);
-        int checkCartDetailsID = await CheckCarritoIDDetails(cartID);
+        int checkCartDetailsID = await CheckProductosEnCarrito(cartID);
         string query;
         if (checkCartDetailsID == 0 || cantidad <= 1)
         {
@@ -142,6 +142,11 @@ public class CarritoRepository : ICarritoRepository
             await connection.ExecuteAsync(query);
         }
     }
+    public async Task<int> ProductosCarrito(int userID){
+        int cartID = await GetCartID(userID);
+        int cantidad = await CheckProductosEnCarrito(cartID);
+        return cantidad;
+    }
 
 
     //Private methods
@@ -219,7 +224,7 @@ public class CarritoRepository : ICarritoRepository
             return total;
         }
     }
-    private async Task<int> CheckCarritoIDDetails(int carritoID)
+    private async Task<int> CheckProductosEnCarrito(int carritoID)
     {
         string query = "SELECT COUNT(*) FROM DetallesCarrito WHERE CarritoID = @CarritoID";
         var parameters = new DynamicParameters();
