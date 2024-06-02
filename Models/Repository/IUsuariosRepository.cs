@@ -7,6 +7,6 @@
         public Task<Usuarios> GetByEmail(string email);
         public void Add(Usuarios usuarios);
         public void Update(Usuarios usuarios);
-        public void Delete(Usuarios usuarios);
+        public void Delete(int id);
     }
 }

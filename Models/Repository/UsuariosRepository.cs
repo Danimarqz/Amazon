@@ -26,11 +26,11 @@ namespace Amazon.Models.Repository
             }
         }
 
-        public void Delete(Usuarios usuarios)
+        public void Delete(int id)
         {
             var query = "DELETE FROM Usuarios WHERE UsuarioID = @UsuarioID";
             var parameters = new DynamicParameters();
-            parameters.Add("UsuarioID", usuarios.UsuarioID);
+            parameters.Add("UsuarioID", id);
             using (var connection = _conexion.ObtenerConexion())
             {
                 connection.Execute(query, parameters);

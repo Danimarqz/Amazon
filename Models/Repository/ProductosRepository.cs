@@ -26,14 +26,14 @@ namespace Amazon.Models.Repository
             }
         }
 
-        public void Delete(Productos productos)
+        public void Delete(int id)
         {
             using (var connection = _conexion.ObtenerConexion())
             {
                 // Comprobar FK
                 var queryDetallesVenta = "SELECT COUNT(*) FROM DetallesVenta WHERE ProductoID = @ProductoID";
                 var parameters = new DynamicParameters();
-                parameters.Add("ProductoID", productos.ProductoID, DbType.Int32);
+                parameters.Add("ProductoID", id, DbType.Int32);
 
                 var dependencyCount = connection.ExecuteScalar<int>(queryDetallesVenta, parameters);
                 
