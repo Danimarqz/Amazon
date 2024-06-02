@@ -10,6 +10,7 @@ builder.Services.AddScoped<IUsuariosRepository, UsuariosRepository>();
 builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
 builder.Services.AddScoped<IProductosRepository, ProductosRepository>();
 builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
+builder.Services.AddScoped<IVentaRepository, VentaRepository>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options=>
 {
