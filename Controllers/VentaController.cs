@@ -73,6 +73,14 @@ namespace Amazon.Controllers
                 return RedirectToAction("Details", ventaID);
             }
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddVenta(int productID)
+        {
+            int userID = Global.user.UsuarioID;
+            await _ventaRepository.AddVenta(productID, userID);
+            return RedirectToAction("Index");
+        }
         protected bool CheckSession(string key)
         {
             return HttpContext.Session.Keys.Contains(key);
