@@ -37,7 +37,6 @@ namespace Amazon.Controllers
         public async Task<IActionResult> Details(int? cartID)
         {
             int cart = cartID ?? await _carritoRepository.GetCartID(Global.user.UsuarioID);
-            Console.WriteLine(cart);
             var carrito = await _carritoRepository.GetAllCart(cart);
             var jsonString = JsonSerializer.Serialize(carrito);
             HttpContext.Session.SetString("Carrito", jsonString);
