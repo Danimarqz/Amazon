@@ -130,6 +130,12 @@ namespace Amazon.Controllers
             }
             return View("Login");
         }
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Session.Clear();
+            Global.user = null;
+            return RedirectToAction("Login", "Usuarios");
+        }
         private bool CheckSession(string key)
         {
             return HttpContext.Session.Keys.Contains(key);
