@@ -46,5 +46,13 @@
             </td>
         </tr>
 }
+        <form asp-action="AddVenta" method="post">
+            @foreach(var item in Model)
+            {
+            <input type="hidden" value="@item.ProductoID" name="listaID" />
+            }
+            <input type="submit" value="Add" />
+        </form>
+
     </tbody>
 </table>

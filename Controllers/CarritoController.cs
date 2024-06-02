@@ -9,11 +9,11 @@ namespace Amazon.Controllers
     public class CarritoController : Controller
     {
         private readonly ICarritoRepository _carritoRepository;
-        private readonly IProductosRepository _productsRepository;
-        public CarritoController(ICarritoRepository carritoRepository, IProductosRepository productosRepository)
+        private readonly IVentaRepository _ventaRepository;
+        public CarritoController(ICarritoRepository carritoRepository, IVentaRepository ventaRepository)
         {
             _carritoRepository = carritoRepository;
-            _productsRepository = productosRepository;
+            _ventaRepository = ventaRepository;
         }
 
         // GET: CarritoController
@@ -82,9 +82,22 @@ namespace Amazon.Controllers
                 return RedirectToAction("Details", cartID);
             }
         }
+        //Varios productos
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddVenta(List<int> listaID)
+        {
+            int userID = Global.user.UsuarioID;
+            foreach(var productoID in listaID)
+            {
+                await _ventaRepository.AddVenta(productoID, userID);
+            }
+            return RedirectToAction("Index");
+        }
         protected bool CheckSession(string key)
         {
             return HttpContext.Session.Keys.Contains(key);
         }
+
     }
 }

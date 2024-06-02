@@ -33,7 +33,7 @@ namespace Amazon.Models.Repository
                 query = $@"UPDATE DetallesVenta SET
                 Cantidad = {cantidad},
                 PrecioUnitario = @PrecioUnitario,
-                PrecioTotal = @PrecioTotal,
+                PrecioTotal = @PrecioTotal
                 WHERE VentaID = {ventaID}
                 AND ProductoID = {productoID}";
             }
@@ -140,7 +140,7 @@ namespace Amazon.Models.Repository
         {
             decimal totalPrice = await GetVentaPrice(ventaID);
             var query = $@"UPDATE Ventas SET
-            TotalVenta = @totalPrice,
+            TotalVenta = @totalPrice
             WHERE VentaID = {ventaID}";
             var parameters = new DynamicParameters();
             parameters.Add("totalPrice", totalPrice);
