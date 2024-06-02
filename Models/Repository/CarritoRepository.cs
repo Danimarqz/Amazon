@@ -108,20 +108,21 @@ public class CarritoRepository : ICarritoRepository
         decimal precio = await CheckPrecioUnitario(productoID);
         decimal precioTotal = precio * (cantidad);
         //UPDATE A CARRITOID
-        int checkCartID = await CheckCarritoIDDetails(cartID);
+        int checkCartDetailsID = await CheckCarritoIDDetails(cartID);
+        int checkCantidadProducto = await CheckCantidadProducto(productoID, cartID);
         string query;
-        if (checkCartID == 0)
+        if (checkCartDetailsID == 0 || checkCantidadProducto == 0)
         {
             query = @$"INSERT INTO DetallesCarrito (CarritoID, ProductoID, Cantidad, PrecioUnitario, PrecioTotal)
         VALUES ({cartID}, {productoID}, {cantidad}, @PrecioUnitario, @PrecioTotal)";
         } else
         {
             query = $@"UPDATE DetallesCarrito SET
-            ProductoID = {productoID},
             Cantidad = {cantidad},
             PrecioUnitario = @PrecioUnitario,
             PrecioTotal = @PrecioTotal
-            WHERE CarritoID = {cartID}";
+            WHERE CarritoID = {cartID}
+            AND ProductoID = {productoID}";
         }
         var parameters = new DynamicParameters();
         parameters.Add("PrecioUnitario", precio, System.Data.DbType.Decimal);
@@ -226,6 +227,15 @@ public class CarritoRepository : ICarritoRepository
         using (var connection = _conexion.ObtenerConexion())
         {
             int count = await connection.ExecuteScalarAsync<int>(query, parameters);
+            return count;
+        }
+    }
+    private async Task<int> CheckProductoIDDetails(int carritoID, int productoID)
+    {
+        string query = $"SELECT COUNT(*) FROM DetallesCarrito WHERE CarritoID = {carritoID} AND ProductoID = {productoID}";
+        using (var connection = _conexion.ObtenerConexion())
+        {
+            int count = await connection.ExecuteScalarAsync<int>(query);
             return count;
         }
     }
