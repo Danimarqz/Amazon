@@ -63,18 +63,10 @@ namespace Amazon.Controllers
             }
             catch
             {
-                return View();
+                return View(detallesCarrito.CarritoID);
             }
         }
-
-        // GET: CarritoController/Delete/5
-        //public ActionResult DeleteProducto(int productoID)
-        //{
-          //  return View(productoID);
-        //}
-
         // POST: CarritoController/Delete/5
-        //Borrar producto del carrito
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProductoAsync(int productoID)
