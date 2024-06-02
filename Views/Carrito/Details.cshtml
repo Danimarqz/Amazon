@@ -40,9 +40,10 @@
                 @Html.DisplayFor(modelItem => item.PrecioTotal)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.CarritoID/* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { id = item.CarritoID/* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.CarritoID/* id=item.PrimaryKey */ })
+                @Html.ActionLink("+1", "EditAdd", new { productoID = item.ProductoID/* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("-1", "EditRm", new { productoID = item.ProductoID/* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Detalles", "Details", "Productos", new { id = item.ProductoID }) |
+                    @Html.ActionLink("Remove", "Delete", new { productoID = item.ProductoID/* id=item.PrimaryKey */ })
             </td>
         </tr>
 }
@@ -51,7 +52,7 @@
             {
             <input type="hidden" value="@item.ProductoID" name="listaID" />
             }
-            <input type="submit" value="Add" />
+            <input type="submit" value="Proceder a la venta" />
         </form>
 
     </tbody>

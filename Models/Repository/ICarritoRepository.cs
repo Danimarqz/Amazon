@@ -7,6 +7,7 @@
         public Task<IEnumerable<DetallesCarrito>> GetAllCart(int userID);
         public Task AddProducto(int productoID, int userID);
         public Task RmProducto(int productoID, int userID);
+        public Task RmAllProducto(int productoID, int userID);
         public Task EditDetallesProductoCarrito(DetallesCarrito detallesCarrito);
     }
 }

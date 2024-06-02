@@ -108,6 +108,12 @@ public class CarritoRepository : ICarritoRepository
         }
             await UpdateCart(cartID);
     }
+    public async Task RmAllProducto(int productoID, int userID)
+    {
+        int cartID = await GetCartID(userID);
+        await DeleteProducto(productoID, cartID);
+        await UpdateCart(cartID);
+    }
     public async Task EditDetallesProductoCarrito(DetallesCarrito detallesCarrito)
     {
         string query = @"UPDATE DetallesCarrito SET

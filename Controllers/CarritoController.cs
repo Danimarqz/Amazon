@@ -43,11 +43,20 @@ namespace Amazon.Controllers
             return View(carrito);
         }
 
-        // GET: CarritoController/Edit/5
-        public async Task<IActionResult> Edit(int cartID)
+        public async Task<IActionResult> EditAdd(int productoID)
         {
-            var detallesCarrito = await _carritoRepository.GetAllCart(cartID);
-            return detallesCarrito == null ? NotFound() : View(detallesCarrito);
+            await _carritoRepository.AddProducto(productoID, Global.user.UsuarioID);
+            return RedirectToAction("Details", await GetDetallesCarrito());
+        }
+        public async Task<IActionResult> EditRM(int productoID)
+        {
+            await _carritoRepository.RmProducto(productoID, Global.user.UsuarioID);
+            return RedirectToAction("Details", await GetDetallesCarrito());
+        }
+        public async Task<IActionResult> Delete(int productoID)
+        {
+            await _carritoRepository.RmAllProducto(productoID, Global.user.UsuarioID);
+            return RedirectToAction("Details", await GetDetallesCarrito());
         }
 
         // POST: CarritoController/Edit/5
@@ -97,6 +106,12 @@ namespace Amazon.Controllers
         protected bool CheckSession(string key)
         {
             return HttpContext.Session.Keys.Contains(key);
+        }
+        private async Task<IEnumerable<DetallesCarrito>> GetDetallesCarrito()
+        {
+            int cartID = await _carritoRepository.GetCartID(Global.user.UsuarioID);
+            var detallesCarrito = await _carritoRepository.GetAllCart(cartID);
+            return detallesCarrito;
         }
 
     }
