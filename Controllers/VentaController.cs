@@ -12,15 +12,15 @@ namespace Amazon.Controllers
         {
             _ventaRepository = ventaRepository;
         }
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             if (!CheckSession("User"))
             {
-                return RedirectToAction("Home", "Index");
+                return RedirectToAction("Index", "Home");
             }
             if (CheckSession("Admin"))
             {
-                var ventas = _ventaRepository.GetVentasAdmin();
+                var ventas = await _ventaRepository.GetVentasAdmin();
                 return View(ventas);
             } else
             {
@@ -37,7 +37,7 @@ namespace Amazon.Controllers
         {
             if (!CheckSession("Admin"))
             {
-                return RedirectToAction("Home", "Index");
+                return RedirectToAction("Index", "Home");
             }
             var detallesVenta = await _ventaRepository.GetDetallesVenta(ventaID);
             return detallesVenta == null ? NotFound() : View(detallesVenta);
@@ -58,6 +58,10 @@ namespace Amazon.Controllers
         }
         public ActionResult Delete(int ventaID)
         {
+            if (!CheckSession("Admin"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View(ventaID);
         }
         [HttpPost]

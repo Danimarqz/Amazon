@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Amazon.Models.DetallesVenta>
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DetalleID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VentaID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductoID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrecioUnitario)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrecioTotal)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DetalleID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VentaID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductoID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cantidad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrecioUnitario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrecioTotal)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { ventaID = item.VentaID/* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Detalles", "Details", "Productos", new { id = item.ProductoID }) |
+                    @Html.ActionLink("Delete", "Delete", new { ventaID = item.VentaID/* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
