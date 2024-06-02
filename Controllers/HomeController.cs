@@ -15,7 +15,11 @@ namespace Amazon.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            if (CheckSession("User")){
+                return View();
+            } else {
+                return RedirectToAction("Create", "Usuarios");    
+            } 
         }
 
         public IActionResult Privacy()
@@ -27,6 +31,10 @@ namespace Amazon.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+                private bool CheckSession(string key)
+        {
+            return HttpContext.Session.Keys.Contains(key);
         }
     }
 }
