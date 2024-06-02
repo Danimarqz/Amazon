@@ -40,7 +40,13 @@ namespace Amazon.Controllers
         // GET: UsuariosController/Create
         public ActionResult Create()
         {
-            return View();
+            if (!CheckSession("Admin"))
+            {
+                return View("Create");
+            } else
+            {
+                return View("CreateAdmin");
+            }
         }
 
         // POST: UsuariosController/Create
