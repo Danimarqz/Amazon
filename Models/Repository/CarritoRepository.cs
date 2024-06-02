@@ -132,6 +132,33 @@ public class CarritoRepository : ICarritoRepository
         }
         await UpdateCart(cartID);
     }
+    public async Task RmProducto(int productoID, int userID)
+    {
+        int cartID = await GetCartID(userID);
+        int cantidad = await CheckCantidadProducto(productoID, cartID) -1;
+        if (cantidad <= 0)
+        {
+            await DeleteProducto(productoID, cartID);
+        } else
+        {
+            decimal precio = await CheckPrecioUnitario(productoID);
+            decimal precioTotal = precio * (cantidad);
+            string query = $@"UPDATE DetallesCarrito SET
+            ProductoID = {productoID},
+            Cantidad = {cantidad},
+            PrecioUnitario = @PrecioUnitario,
+            PrecioTotal = @PrecioTotal
+            WHERE CarritoID = {cartID}";
+            var parameters = new DynamicParameters();
+            parameters.Add("PrecioUnitario", precio, System.Data.DbType.Decimal);
+            parameters.Add("PrecioTotal", precioTotal, System.Data.DbType.Decimal);
+            using (var connection = _conexion.ObtenerConexion())
+            {
+                connection.Execute(query, parameters);
+            }
+        }
+            await UpdateCart(cartID);
+    }
     public async Task EditDetallesProductoCarrito(DetallesCarrito detallesCarrito)
     {
         string query = @"UPDATE DetallesCarrito SET
