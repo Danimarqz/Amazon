@@ -93,11 +93,11 @@ public class CarritoRepository : ICarritoRepository
             decimal precio = await CheckPrecioUnitario(productoID);
             decimal precioTotal = precio * (cantidad);
             string query = $@"UPDATE DetallesCarrito SET
-            ProductoID = {productoID},
             Cantidad = {cantidad},
             PrecioUnitario = @PrecioUnitario,
             PrecioTotal = @PrecioTotal
-            WHERE CarritoID = {cartID}";
+            WHERE CarritoID = {cartID}
+            AND ProductoID = {productoID}";
             var parameters = new DynamicParameters();
             parameters.Add("PrecioUnitario", precio, System.Data.DbType.Decimal);
             parameters.Add("PrecioTotal", precioTotal, System.Data.DbType.Decimal);
