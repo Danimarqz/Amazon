@@ -202,8 +202,8 @@ public class CarritoRepository : ICarritoRepository
 
         using (var connection = _conexion.ObtenerConexion())
         {
-            int count = await connection.ExecuteScalarAsync<int>(query, parameters);
-            return count;
+            int? count = await connection.ExecuteScalarAsync<int?>(query, parameters);
+            return count ?? 0;
         }
     }
 
