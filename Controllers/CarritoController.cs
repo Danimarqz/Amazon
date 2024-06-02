@@ -90,7 +90,7 @@ namespace Amazon.Controllers
             int cartID = await _carritoRepository.GetCartID(Global.user.UsuarioID);
             try
             {
-                _carritoRepository.DeleteProducto(productoID, cartID);
+                await _carritoRepository.RmProducto(productoID, cartID);
                 return RedirectToAction("Index");
             }
             catch

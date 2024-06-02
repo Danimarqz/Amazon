@@ -11,17 +11,6 @@ public class CarritoRepository : ICarritoRepository
         _conexion = conexion;
     }
     //Carrito
-    public async Task<Carrito> GetCart(int userID)
-    {
-        string query = "SELECT * FROM Carrito WHERE UsuarioID = @UsuarioID";
-        var parameters = new DynamicParameters();
-        parameters.Add("UsuarioID", userID, System.Data.DbType.Int32);
-        using (var connection = _conexion.ObtenerConexion())
-        {
-            var carrito = await connection.QuerySingleOrDefaultAsync<Carrito>(query, parameters);
-            return carrito;
-        }
-    }
     public async Task<int> GetCartID(int userID)
     {
         string query = "SELECT CarritoID FROM Carrito WHERE UsuarioID = @UsuarioID";
@@ -43,51 +32,7 @@ public class CarritoRepository : ICarritoRepository
             return AllCarritos;
         }
     }
-    public async Task Add(int userID)
-    {
-        DateTime now = DateTime.Now;
-        int total = 0;
-        string query = @"INSERT INTO Carrito (UsuarioID, FechaCarrito, totalVenta) 
-                     VALUES (@UsuarioID, @FechaCarrito, @TotalVenta)";
-        var parameters = new DynamicParameters();
-        parameters.Add("UsuarioID", userID);
-        parameters.Add("FechaCarrito", now);
-        parameters.Add("TotalVenta", total);
-        using (var connection = _conexion.ObtenerConexion())
-        {
-            await connection.ExecuteAsync(query, parameters);
-        }
-    }
 
-    public async Task EditCarrito(Carrito cart)
-    {
-        decimal totalVenta = await GetCartPrice(cart.CarritoID);
-        string query = @$"UPDATE Carrito SET
-        totalVenta = {totalVenta},
-        WHERE CarritoID = @CarritoID,
-        AND UsuarioID = @UsuarioID";
-        var parameters = new DynamicParameters();
-        parameters.Add("totalVenta", cart.totalVenta, System.Data.DbType.Decimal);
-        parameters.Add("CarritoID", cart.CarritoID, System.Data.DbType.Int32);
-        parameters.Add("UsuarioID", cart.UsuarioID, System.Data.DbType.Int32);
-        using (var connection = _conexion.ObtenerConexion())
-        {
-            connection.Execute(query, parameters);
-        }
-    }
-    public async Task UpdateCart(int cartID)
-    {
-        decimal totalPrice = await GetCartPrice(cartID);
-        var query = $@"UPDATE Carrito SET
-        totalVenta = @totalVenta
-        WHERE CarritoID = {cartID}";
-        var parameters = new DynamicParameters();
-        parameters.Add("totalVenta", totalPrice);
-        using (var connection = _conexion.ObtenerConexion())
-        {
-            connection.Execute(query, parameters);
-        }
-    }
     //DetallesCarrito
     public async Task<IEnumerable<DetallesCarrito>> GetAllCart(int cartID)
     {
@@ -104,6 +49,11 @@ public class CarritoRepository : ICarritoRepository
     public async Task AddProducto(int productoID, int userID)
     {
         int cartID = await GetCartID(userID);
+        if (cartID == 0)
+        {
+            await Add(userID);
+            cartID = await GetCartID(userID);
+        }
         int cantidad = await CheckCantidadProducto(productoID, cartID) + 1;
         decimal precio = await CheckPrecioUnitario(productoID);
         decimal precioTotal = precio * (cantidad);
@@ -135,7 +85,7 @@ public class CarritoRepository : ICarritoRepository
     {
         int cartID = await GetCartID(userID);
         int cantidad = await CheckCantidadProducto(productoID, cartID) -1;
-        if (cantidad <= 0)
+        if (cantidad < 1)
         {
             await DeleteProducto(productoID, cartID);
         } else
@@ -179,7 +129,36 @@ public class CarritoRepository : ICarritoRepository
     }
 
 
-    public async Task DeleteProducto(int productoID, int carritoID)
+    //Private methods
+    private async Task Add(int userID)
+    {
+        DateTime now = DateTime.Now;
+        int total = 0;
+        string query = @"INSERT INTO Carrito (UsuarioID, FechaCarrito, totalVenta) 
+                     VALUES (@UsuarioID, @FechaCarrito, @TotalVenta)";
+        var parameters = new DynamicParameters();
+        parameters.Add("UsuarioID", userID);
+        parameters.Add("FechaCarrito", now);
+        parameters.Add("TotalVenta", total);
+        using (var connection = _conexion.ObtenerConexion())
+        {
+            await connection.ExecuteAsync(query, parameters);
+        }
+    }
+    private async Task UpdateCart(int cartID)
+    {
+        decimal totalPrice = await GetCartPrice(cartID);
+        var query = $@"UPDATE Carrito SET
+        totalVenta = @totalVenta
+        WHERE CarritoID = {cartID}";
+        var parameters = new DynamicParameters();
+        parameters.Add("totalVenta", totalPrice);
+        using (var connection = _conexion.ObtenerConexion())
+        {
+            connection.Execute(query, parameters);
+        }
+    }
+    private async Task DeleteProducto(int productoID, int carritoID)
     {
         string query = $"DELETE FROM DetallesCarrito WHERE carritoID = {carritoID} AND productoID = {productoID}";
         using (var connection = _conexion.ObtenerConexion())
@@ -187,7 +166,6 @@ public class CarritoRepository : ICarritoRepository
             await connection.ExecuteAsync(query);
         }
     }
-    //Private check methods
     private async Task<int> CheckCantidadProducto(int productoID, int carritoID)
     {
         var query = $"SELECT Cantidad FROM DetallesCarrito WHERE CarritoID = {carritoID} AND productoID = {productoID}";

@@ -123,11 +123,6 @@ namespace Amazon.Controllers
         public async Task<IActionResult> AddToCart(int productID)
         {
             int userID = Global.user.UsuarioID;
-            int? cartID = await _carritoRepository.GetCartID(userID);
-            if (cartID == 0)
-            {
-                await _carritoRepository.Add(userID);
-            };
             await _carritoRepository.AddProducto(productID, userID);
             return RedirectToAction("Index");
         }
