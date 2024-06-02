@@ -2,6 +2,7 @@
 using Amazon.Models.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SqlClient;
 using System.Text.Json;
 
 namespace Amazon.Controllers
@@ -112,10 +113,18 @@ namespace Amazon.Controllers
             var user = await _usuariosRepository.GetById(id);
             if (user != null)
             {
-                await _usuariosRepository.Delete(id);
-                return RedirectToAction("Index");
+                try
+                {
+                    await _usuariosRepository.Delete(id);
+                    return RedirectToAction("Index");
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return RedirectToAction("Index");
+                }
             }
-            return View("Delete", id);
+                return View("Delete", id);
         }
         // GET: Login
         public ActionResult Login()
