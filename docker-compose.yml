@@ -13,8 +13,12 @@ services:
       - "1433:1433"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - sqlserver:/var/opt/mssql/
+
     entrypoint: /bin/bash -c "
       /opt/mssql/bin/sqlservr &
       sleep 30 &&
       /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P password123! -i /docker-entrypoint-initdb.d/init.sql &&
       wait"
+volumes:
+  sqlserver:
