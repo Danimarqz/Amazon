@@ -122,7 +122,8 @@ namespace Amazon.Controllers
         //POST: Login
         public async Task<IActionResult> DoLogin(Usuarios u)
         {
-            var user = await _usuariosRepository.GetByEmail(u.Email);
+            try {
+                var user = await _usuariosRepository.GetByEmail(u.Email);
             if (user.Contrasena == u.Contrasena)
             {
                 string jsonString = JsonSerializer.Serialize(user);
@@ -133,6 +134,9 @@ namespace Amazon.Controllers
                     HttpContext.Session.SetString("Admin", jsonString);
                 }
                 return RedirectToAction("Index");
+            }
+            } catch {
+                return View("Login");
             }
             return View("Login");
         }
