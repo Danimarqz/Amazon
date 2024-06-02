@@ -23,7 +23,7 @@ namespace Amazon.Controllers
             }
             var Users = await _usuariosRepository.GetAll();
             return View(Users);
-            
+
         }
 
         // GET: UsuariosController/Details/5
@@ -55,7 +55,7 @@ namespace Amazon.Controllers
         public IActionResult Create(Usuarios u)
         {
             _usuariosRepository.Add(u);
-                return RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
 
         // GET: UsuariosController/Edit/5
@@ -109,7 +109,7 @@ namespace Amazon.Controllers
             var user = await _usuariosRepository.GetById(id);
             if (user != null)
             {
-                _usuariosRepository.Delete(user);
+                _usuariosRepository.Delete(id);
                 return RedirectToAction("Index");
             }
             return View("Delete", id);

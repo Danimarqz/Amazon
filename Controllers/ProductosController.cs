@@ -109,7 +109,7 @@ namespace Amazon.Controllers
             var producto = await _productosRepository.GetById(id);
             try
             {
-                _productosRepository.Delete(producto);
+                _productosRepository.Delete(id);
                 return RedirectToAction("Index");
             } catch(InvalidOperationException ex)
             {
