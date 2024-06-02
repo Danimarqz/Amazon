@@ -107,11 +107,9 @@ public class CarritoRepository : ICarritoRepository
         int cantidad = await CheckCantidadProducto(productoID, cartID) + 1;
         decimal precio = await CheckPrecioUnitario(productoID);
         decimal precioTotal = precio * (cantidad);
-        //UPDATE A CARRITOID
         int checkCartDetailsID = await CheckCarritoIDDetails(cartID);
-        int checkCantidadProducto = await CheckCantidadProducto(productoID, cartID);
         string query;
-        if (checkCartDetailsID == 0 || checkCantidadProducto == 0)
+        if (checkCartDetailsID == 0 || cantidad <= 1)
         {
             query = @$"INSERT INTO DetallesCarrito (CarritoID, ProductoID, Cantidad, PrecioUnitario, PrecioTotal)
         VALUES ({cartID}, {productoID}, {cantidad}, @PrecioUnitario, @PrecioTotal)";
@@ -227,15 +225,6 @@ public class CarritoRepository : ICarritoRepository
         using (var connection = _conexion.ObtenerConexion())
         {
             int count = await connection.ExecuteScalarAsync<int>(query, parameters);
-            return count;
-        }
-    }
-    private async Task<int> CheckProductoIDDetails(int carritoID, int productoID)
-    {
-        string query = $"SELECT COUNT(*) FROM DetallesCarrito WHERE CarritoID = {carritoID} AND ProductoID = {productoID}";
-        using (var connection = _conexion.ObtenerConexion())
-        {
-            int count = await connection.ExecuteScalarAsync<int>(query);
             return count;
         }
     }
