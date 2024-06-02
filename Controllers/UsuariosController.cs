@@ -124,10 +124,10 @@ namespace Amazon.Controllers
             {
                 Console.WriteLine(ex.Message);
                 return RedirectToAction("Index");
-              }
             }
-              return View("Delete", id);
+            return View("Delete", id);
         }
+
         // GET: Login
         public ActionResult Login()
         {
