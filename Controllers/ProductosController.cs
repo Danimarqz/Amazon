@@ -123,8 +123,8 @@ namespace Amazon.Controllers
         public async Task<IActionResult> AddToCart(int productID)
         {
             int userID = Global.user.UsuarioID;
-            Global.carritoCantidad = await _carritoRepository.ProductosCarrito(Global.user.UsuarioID);
             await _carritoRepository.AddProducto(productID, userID);
+            Global.carritoCantidad = await _carritoRepository.ProductosCarrito(Global.user.UsuarioID);
             return RedirectToAction("Index");
         }
         private bool CheckSession(string key)

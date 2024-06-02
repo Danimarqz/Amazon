@@ -106,7 +106,7 @@ namespace Amazon.Controllers
             }
             await _carritoRepository.RmCarrito(userID);
             Global.carritoCantidad = await _carritoRepository.ProductosCarrito(Global.user.UsuarioID);
-            return RedirectToAction("Index", "Ventas");
+            return RedirectToAction("Index", "Venta");
         }
         protected bool CheckSession(string key)
         {
