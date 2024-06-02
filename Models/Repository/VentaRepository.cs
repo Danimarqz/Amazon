@@ -19,12 +19,12 @@ namespace Amazon.Models.Repository
                 await Add(userID);
                 ventaID = await GetVentaID(userID);
             }
-            int cantidad = await CheckCantidadProducto(productoID, ventaID) + 1;
+            int cantidad = await CheckCantidadProducto(productoID, ventaID) +1;
             decimal precio = await CheckPrecioUnitario(productoID);
             decimal precioTotal = precio * cantidad;
             int checkVentaDetailsID = await CheckVentaIDDetails(ventaID);
             string query;
-            if(checkVentaDetailsID == 0 || cantidad < 1)
+            if(checkVentaDetailsID == 0 || cantidad <= 1)
             {
                 query = $@"INSERT INTO DetallesVenta (VentaID, ProductoID, Cantidad, PrecioUnitario, PrecioTotal)
                 VALUES ({ventaID}, {productoID}, {cantidad}, @PrecioUnitario, @PrecioTotal)";
