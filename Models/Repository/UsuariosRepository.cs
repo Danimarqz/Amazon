@@ -10,7 +10,7 @@ namespace Amazon.Models.Repository
         {
             _conexion = conexion;
         }
-        public void Add(Usuarios usuarios)
+        public async Task Add(Usuarios usuarios)
         {
             var query = @"
             INSERT INTO Usuarios (NombreUsuario, Contrasena, Email, userType) VALUES
@@ -22,22 +22,22 @@ namespace Amazon.Models.Repository
             parameters.Add("userType", usuarios.userType, DbType.String);
             using (var connection = _conexion.ObtenerConexion())
             {
-                connection.Execute(query, parameters);
+                await connection.ExecuteAsync(query, parameters);
             }
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             var query = "DELETE FROM Usuarios WHERE UsuarioID = @UsuarioID";
             var parameters = new DynamicParameters();
             parameters.Add("UsuarioID", id);
             using (var connection = _conexion.ObtenerConexion())
             {
-                connection.Execute(query, parameters);
+                await connection.ExecuteAsync(query, parameters);
             }
         }
 
-        public void Update(Usuarios usuarios)
+        public async Task Update(Usuarios usuarios)
         {
             var query = @"UPDATE Usuarios SET NombreUsuario = @NombreUsuario, 
             Contrasena = @Contrasena,
@@ -52,7 +52,7 @@ namespace Amazon.Models.Repository
             parameters.Add("UsuarioID", usuarios.UsuarioID, DbType.Int32);
             using (var connection = _conexion.ObtenerConexion())
             {
-                connection.Execute(query, parameters);
+                await connection.ExecuteAsync(query, parameters);
             }
         }
 

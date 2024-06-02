@@ -5,8 +5,8 @@
         public Task<IEnumerable<Usuarios>> GetAll();
         public Task<Usuarios> GetById(int id);
         public Task<Usuarios> GetByEmail(string email);
-        public void Add(Usuarios usuarios);
-        public void Update(Usuarios usuarios);
-        public void Delete(int id);
+        public Task Add(Usuarios usuarios);
+        public Task Update(Usuarios usuarios);
+        public Task Delete(int id);
     }
 }
