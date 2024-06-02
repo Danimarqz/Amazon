@@ -22,7 +22,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    depends_on: mssql
+    depends_on: 
+      - mssql
     ports:
       - "8080:8080"
 volumes:
