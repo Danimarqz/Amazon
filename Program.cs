@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton(new Conexion(builder.Configuration.GetConnectionString("Amazon")));
+//When using docker
+//builder.Services.AddSingleton(new Conexion(builder.Configuration.GetConnectionString("AmazonDocker")));
 builder.Services.AddScoped<IUsuariosRepository, UsuariosRepository>();
 builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
 builder.Services.AddScoped<IProductosRepository, ProductosRepository>();
