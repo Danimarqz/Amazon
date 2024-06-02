@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS AmazonMontecastelo
 USE [AmazonMontecastelo]
 GO
 SET ANSI_NULLS ON
