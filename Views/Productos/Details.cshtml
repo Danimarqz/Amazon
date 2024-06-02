@@ -37,6 +37,10 @@
     </dl>
 </div>
 <div>
+    <form asp-action="AddToCart" method="post">
+        <input type="hidden" value="@Model.ProductoID" name="productID" />
+        <input type="submit" value="Add" />
+    </form>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ProductoID }) |
     <a asp-action="Index">Back to List</a>
 </div>

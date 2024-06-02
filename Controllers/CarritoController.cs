@@ -29,14 +29,7 @@ namespace Amazon.Controllers
                 return View(carrito);
             } else
             {
-                try
-                {
-                    return RedirectToAction("Details");
-                }
-                catch
-                {
-                    return RedirectToAction("Index", "Home");
-                }
+                return RedirectToAction("Details");
             }
         }
 
