@@ -2,6 +2,7 @@
 using Amazon.Models.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SqlClient;
 using System.Text.Json;
 
 namespace Amazon.Controllers
@@ -45,7 +46,8 @@ namespace Amazon.Controllers
             if (!CheckSession("Admin"))
             {
                 return View("Create");
-            } else
+            }
+            else
             {
                 return View("CreateAdmin");
             }
@@ -105,14 +107,22 @@ namespace Amazon.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!CheckSession("Admin"))
+            try
             {
-                return RedirectToAction("Index", "Home");
+                if (!CheckSession("Admin"))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                var user = await _usuariosRepository.GetById(id);
+                if (user != null)
+                {
+                    await _usuariosRepository.Delete(id);
+                    return RedirectToAction("Index");
+                }
             }
-            var user = await _usuariosRepository.GetById(id);
-            if (user != null)
+            catch (SqlException ex)
             {
-                await _usuariosRepository.Delete(id);
+                Console.WriteLine(ex.Message);
                 return RedirectToAction("Index");
             }
             return View("Delete", id);
@@ -125,21 +135,24 @@ namespace Amazon.Controllers
         //POST: Login
         public async Task<IActionResult> DoLogin(Usuarios u)
         {
-            try {
-                var user = await _usuariosRepository.GetByEmail(u.Email);
-            if (user.Contrasena == u.Contrasena)
+            try
             {
-                string jsonString = JsonSerializer.Serialize(user);
-                HttpContext.Session.SetString("User", jsonString);
-                Global.user = user;
-                Global.carritoCantidad = await _carritoRepository.ProductosCarrito(Global.user.UsuarioID);
-                if (user.userType == "administrador")
+                var user = await _usuariosRepository.GetByEmail(u.Email);
+                if (user.Contrasena == u.Contrasena)
                 {
-                    HttpContext.Session.SetString("Admin", jsonString);
+                    string jsonString = JsonSerializer.Serialize(user);
+                    HttpContext.Session.SetString("User", jsonString);
+                    Global.user = user;
+                    Global.carritoCantidad = await _carritoRepository.ProductosCarrito(Global.user.UsuarioID);
+                    if (user.userType == "administrador")
+                    {
+                        HttpContext.Session.SetString("Admin", jsonString);
+                    }
+                    return RedirectToAction("Index");
                 }
-                return RedirectToAction("Index");
             }
-            } catch {
+            catch
+            {
                 return View("Login");
             }
             return View("Login");
