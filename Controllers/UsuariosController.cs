@@ -52,9 +52,10 @@ namespace Amazon.Controllers
         // POST: UsuariosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Usuarios u)
+        public async Task<IActionResult> CreateAsync(Usuarios u)
         {
-            _usuariosRepository.Add(u);
+            await _usuariosRepository.Add(u);
+            await DoLogin(u);
             return RedirectToAction("Index");
         }
 
@@ -109,7 +110,7 @@ namespace Amazon.Controllers
             var user = await _usuariosRepository.GetById(id);
             if (user != null)
             {
-                _usuariosRepository.Delete(id);
+                await _usuariosRepository.Delete(id);
                 return RedirectToAction("Index");
             }
             return View("Delete", id);
@@ -140,7 +141,7 @@ namespace Amazon.Controllers
             }
             return View("Login");
         }
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
             HttpContext.Session.Clear();
             Global.user = null;
