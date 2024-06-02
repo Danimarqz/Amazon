@@ -35,7 +35,7 @@ namespace Amazon.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            var UsersDetail = await _usuariosRepository.GetAll();
+            var UsersDetail = await _usuariosRepository.GetById(id);
             return View("Details", UsersDetail);
         }
 
