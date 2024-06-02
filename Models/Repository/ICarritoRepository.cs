@@ -9,5 +9,6 @@
         public Task RmProducto(int productoID, int userID);
         public Task RmAllProducto(int productoID, int userID);
         public Task EditDetallesProductoCarrito(DetallesCarrito detallesCarrito);
+        public Task RmCarrito(int userID);
     }
 }

@@ -133,6 +133,15 @@ public class CarritoRepository : ICarritoRepository
             await connection.ExecuteAsync(query, parameters);
         }
     }
+    public async Task RmCarrito(int userID)
+    {
+        string query = $@"DELETE FROM Carrito WHERE UsuarioID = {userID}";
+        await RemoveAllCarrito(userID);
+        using (var connection = _conexion.ObtenerConexion())
+        {
+            await connection.ExecuteAsync(query);
+        }
+    }
 
 
     //Private methods
@@ -171,6 +180,16 @@ public class CarritoRepository : ICarritoRepository
         {
             await connection.ExecuteAsync(query);
         }
+    }
+    private async Task RemoveAllCarrito(int userID)
+    {
+        int cartID = await GetCartID(userID);
+        string query = $"DELETE FROM DetallesCarrito WHERE carritoID = {cartID}";
+        using (var connection = _conexion.ObtenerConexion())
+        {
+            await connection.ExecuteAsync(query);
+        }
+
     }
     private async Task<int> CheckCantidadProducto(int productoID, int carritoID)
     {
@@ -212,5 +231,4 @@ public class CarritoRepository : ICarritoRepository
             return count ?? 0;
         }
     }
-
 }

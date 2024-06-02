@@ -101,7 +101,8 @@ namespace Amazon.Controllers
             {
                 await _ventaRepository.AddVenta(productoID, userID);
             }
-            return RedirectToAction("Index");
+            await _carritoRepository.RmCarrito(userID);
+            return RedirectToAction("Index", "Ventas");
         }
         protected bool CheckSession(string key)
         {
